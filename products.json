@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "name": "Classic Spring Tee",
+    "image": "assets/img/shop_01.jpg",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["red", "blue", "black"],
+    "rating": 3,
+    "price": 250.00
+  },
+  {
+    "id": 2,
+    "name": "Summer Breeze Shirt",
+    "image": "assets/img/shop_02.jpg",
+    "sizes": ["M", "L", "XL"],
+    "colors": ["light", "green"],
+    "rating": 4,
+    "price": 320.00
+  },
+  {
+    "id": 3,
+    "name": "Urban Cargo Pants",
+    "image": "assets/img/shop_03.jpg",
+    "sizes": ["S", "M", "L"],
+    "colors": ["black", "green"],
+    "rating": 5,
+    "price": 450.00
+  },
+  {
+    "id": 4,
+    "name": "Active Wear Hoodie",
+    "image": "assets/img/shop_04.jpg",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["red", "black", "light"],
+    "rating": 4,
+    "price": 590.00
+  },
+  {
+    "id": 5,
+    "name": "Ocean Blue Shorts",
+    "image": "assets/img/shop_05.jpg",
+    "sizes": ["M", "L"],
+    "colors": ["blue", "light"],
+    "rating": 3,
+    "price": 180.00
+  },
+  {
+    "id": 6,
+    "name": "Midnight Polo",
+    "image": "assets/img/shop_06.jpg",
+    "sizes": ["M", "L", "XL"],
+    "colors": ["black", "blue"],
+    "rating": 4,
+    "price": 290.00
+  },
+  {
+    "id": 7,
+    "name": "Sunset Cotton Dress",
+    "image": "assets/img/shop_07.jpg",
+    "sizes": ["S", "M"],
+    "colors": ["red", "light"],
+    "rating": 5,
+    "price": 750.00
+  },
+  {
+    "id": 8,
+    "name": "Dynamic Sports Cap",
+    "image": "assets/img/shop_08.jpg",
+    "sizes": ["Free Size"],
+    "colors": ["black", "red", "blue"],
+    "rating": 4,
+    "price": 120.00
+  },
+  {
+    "id": 9,
+    "name": "Leather Casual Belts",
+    "image": "assets/img/shop_09.jpg",
+    "sizes": ["M", "L", "XL"],
+    "colors": ["black"],
+    "rating": 4,
+    "price": 350.00
+  },
+  {
+    "id": 10,
+    "name": "Modern Fit Jeans",
+    "image": "assets/img/shop_10.jpg",
+    "sizes": ["30", "32", "34", "36"],
+    "colors": ["blue", "black"],
+    "rating": 5,
+    "price": 890.00
+  },
+  {
+    "id": 11,
+    "name": "Vintage Denim Jacket",
+    "image": "assets/img/shop_01.jpg",
+    "sizes": ["L", "XL"],
+    "colors": ["blue"],
+    "rating": 4,
+    "price": 1200.00
+  },
+  {
+    "id": 12,
+    "name": "Cozy Knit Sweater",
+    "image": "assets/img/shop_02.jpg",
+    "sizes": ["S", "M", "L"],
+    "colors": ["light", "red"],
+    "rating": 4,
+    "price": 490.00
+  },
+  {
+    "id": 13,
+    "name": "Professional Blazer",
+    "image": "assets/img/shop_03.jpg",
+    "sizes": ["M", "L", "XL"],
+    "colors": ["black", "blue"],
+    "rating": 5,
+    "price": 1500.00
+  },
+  {
+    "id": 14,
+    "name": "Basic White V-Neck",
+    "image": "assets/img/shop_04.jpg",
+    "sizes": ["S", "M", "L"],
+    "colors": ["light"],
+    "rating": 3,
+    "price": 190.00
+  },
+  {
+    "id": 15,
+    "name": "Street Style Joggers",
+    "image": "assets/img/shop_05.jpg",
+    "sizes": ["M", "L", "XL"],
+    "colors": ["black", "green"],
+    "rating": 4,
+    "price": 420.00
+  },
+  {
+    "id": 16,
+    "name": "Linen Summer Pants",
+    "image": "assets/img/shop_06.jpg",
+    "sizes": ["S", "M", "L"],
+    "colors": ["light", "green"],
+    "rating": 4,
+    "price": 550.00
+  },
+  {
+    "id": 17,
+    "name": "Graphic Print Tee",
+    "image": "assets/img/shop_07.jpg",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["black", "red"],
+    "rating": 3,
+    "price": 280.00
+  },
+  {
+    "id": 18,
+    "name": "Rainproof Windbreaker",
+    "image": "assets/img/shop_08.jpg",
+    "sizes": ["L", "XL", "XXL"],
+    "colors": ["blue", "green"],
+    "rating": 5,
+    "price": 950.00
+  },
+  {
+    "id": 19,
+    "name": "Soft Wool Scarf",
+    "image": "assets/img/shop_09.jpg",
+    "sizes": ["Free Size"],
+    "colors": ["red", "black", "light"],
+    "rating": 4,
+    "price": 220.00
+  },
+  {
+    "id": 20,
+    "name": "Canvas Tote Bag",
+    "image": "assets/img/shop_10.jpg",
+    "sizes": ["Standard"],
+    "colors": ["light", "green"],
+    "rating": 4,
+    "price": 150.00
+  }
+]
