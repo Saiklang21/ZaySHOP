@@ -6,7 +6,8 @@
     "sizes": ["S", "M", "L", "XL"],
     "colors": ["red", "blue", "black"],
     "rating": 3,
-    "price": 250.00
+    "price": 250.00,
+    "category": "Women"
   },
   {
     "id": 2,
@@ -15,7 +16,8 @@
     "sizes": ["M", "L", "XL"],
     "colors": ["light", "green"],
     "rating": 4,
-    "price": 320.00
+    "price": 320.00,
+    "category": "Women"
   },
   {
     "id": 3,
@@ -24,7 +26,8 @@
     "sizes": ["S", "M", "L"],
     "colors": ["black", "green"],
     "rating": 5,
-    "price": 450.00
+    "price": 450.00,
+    "category": "Women"
   },
   {
     "id": 4,
@@ -33,7 +36,8 @@
     "sizes": ["S", "M", "L", "XL", "XXL"],
     "colors": ["red", "black", "light"],
     "rating": 4,
-    "price": 590.00
+    "price": 590.00,
+    "category": "Men"
   },
   {
     "id": 5,
@@ -42,7 +46,8 @@
     "sizes": ["M", "L"],
     "colors": ["blue", "light"],
     "rating": 3,
-    "price": 180.00
+    "price": 180.00,
+    "category": "Men"
   },
   {
     "id": 6,
@@ -51,7 +56,8 @@
     "sizes": ["M", "L", "XL"],
     "colors": ["black", "blue"],
     "rating": 4,
-    "price": 290.00
+    "price": 290.00,
+    "category": "Women"
   },
   {
     "id": 7,
@@ -60,7 +66,8 @@
     "sizes": ["S", "M"],
     "colors": ["red", "light"],
     "rating": 5,
-    "price": 750.00
+    "price": 750.00,
+    "category": "Men"
   },
   {
     "id": 8,
@@ -69,7 +76,8 @@
     "sizes": ["Free Size"],
     "colors": ["black", "red", "blue"],
     "rating": 4,
-    "price": 120.00
+    "price": 120.00,
+    "category": "Women"
   },
   {
     "id": 9,
@@ -78,7 +86,8 @@
     "sizes": ["M", "L", "XL"],
     "colors": ["black"],
     "rating": 4,
-    "price": 350.00
+    "price": 350.00,
+    "category": "Women"
   },
   {
     "id": 10,
@@ -87,7 +96,8 @@
     "sizes": ["30", "32", "34", "36"],
     "colors": ["blue", "black"],
     "rating": 5,
-    "price": 890.00
+    "price": 890.00,
+    "category": "Women"
   },
   {
     "id": 11,
@@ -96,7 +106,8 @@
     "sizes": ["L", "XL"],
     "colors": ["blue"],
     "rating": 4,
-    "price": 1200.00
+    "price": 1200.00,
+    "category": "Women"
   },
   {
     "id": 12,
@@ -105,7 +116,8 @@
     "sizes": ["S", "M", "L"],
     "colors": ["light", "red"],
     "rating": 4,
-    "price": 490.00
+    "price": 490.00,
+    "category": "Women"
   },
   {
     "id": 13,
@@ -114,7 +126,8 @@
     "sizes": ["M", "L", "XL"],
     "colors": ["black", "blue"],
     "rating": 5,
-    "price": 1500.00
+    "price": 1500.00,
+    "category": "Women"
   },
   {
     "id": 14,
@@ -123,7 +136,8 @@
     "sizes": ["S", "M", "L"],
     "colors": ["light"],
     "rating": 3,
-    "price": 190.00
+    "price": 190.00,
+    "category": "Men"
   },
   {
     "id": 15,
@@ -132,7 +146,8 @@
     "sizes": ["M", "L", "XL"],
     "colors": ["black", "green"],
     "rating": 4,
-    "price": 420.00
+    "price": 420.00,
+    "category": "Men"
   },
   {
     "id": 16,
@@ -141,7 +156,8 @@
     "sizes": ["S", "M", "L"],
     "colors": ["light", "green"],
     "rating": 4,
-    "price": 550.00
+    "price": 550.00,
+    "category": "Women"
   },
   {
     "id": 17,
@@ -150,7 +166,8 @@
     "sizes": ["S", "M", "L", "XL"],
     "colors": ["black", "red"],
     "rating": 3,
-    "price": 280.00
+    "price": 280.00,
+    "category": "Men"
   },
   {
     "id": 18,
@@ -159,7 +176,8 @@
     "sizes": ["L", "XL", "XXL"],
     "colors": ["blue", "green"],
     "rating": 5,
-    "price": 950.00
+    "price": 950.00,
+    "category": "Women"
   },
   {
     "id": 19,
@@ -168,7 +186,8 @@
     "sizes": ["Free Size"],
     "colors": ["red", "black", "light"],
     "rating": 4,
-    "price": 220.00
+    "price": 220.00,
+    "category": "Women"
   },
   {
     "id": 20,
@@ -177,6 +196,7 @@
     "sizes": ["Standard"],
     "colors": ["light", "green"],
     "rating": 4,
-    "price": 150.00
+    "price": 150.00,
+    "category": "Women"
   }
 ]
