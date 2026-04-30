@@ -89,10 +89,11 @@ https://templatemo.com/tm-559-zay-shop
                     <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
                         <i class="fa fa-fw fa-search text-dark mr-2"></i>
                     </a>
-                    <a class="nav-icon position-relative text-decoration-none" href="#">
-                        <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
-                        <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span>
-                    </a>
+                    <!-- ค้นหาจุดที่มี fa-cart-arrow-down แล้วแทนที่ด้วยโค้ดนี้ -->
+                        <a class="nav-icon position-relative text-decoration-none" href="#" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas">
+                            <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
+                            <span id="cart-badge" class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">0</span>
+                        </a>
                     <a class="nav-icon position-relative text-decoration-none" href="#">
                         <i class="fa fa-fw fa-user text-dark mr-3"></i>
                         <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">+99</span>
@@ -368,6 +369,33 @@ https://templatemo.com/tm-559-zay-shop
                 </div>
             </div>
         </div>
+        <!-- Start Cart Offcanvas (แท็บตะกร้าสินค้าสไลด์ด้านข้าง) -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
+    <div class="offcanvas-header bg-success text-white">
+        <h5 class="offcanvas-title" id="cartOffcanvasLabel"><i class="fas fa-shopping-cart mr-2"></i> ตะกร้าของคุณ</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+        
+        <!-- กล่องสำหรับโชว์รายการสินค้า -->
+        <div id="cart-items-container" class="flex-grow-1 overflow-auto">
+            <p class="text-center text-muted mt-5">ตะกร้าของคุณว่างเปล่า</p>
+        </div>
+        
+        <!-- ส่วนสรุปยอดและปุ่มจ่ายเงิน -->
+        <div class="mt-auto pt-3 border-top">
+            <div class="d-flex justify-content-between mb-3">
+                <span class="h5 mb-0">ยอดรวมทั้งสิ้น:</span>
+                <strong class="h5 mb-0 text-success" id="cart-total-price">$0.00</strong>
+            </div>
+            <button class="btn btn-success btn-lg w-100 text-white" id="checkout-btn">
+                ดำเนินการชำระเงิน <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+        </div>
+
+    </div>
+</div>
+<!-- End Cart Offcanvas -->
 
     </footer>
     <!-- End Footer -->
@@ -378,138 +406,21 @@ https://templatemo.com/tm-559-zay-shop
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/templatemo.js"></script>
     <script src="assets/js/custom.js"></script>
-
-    <script>
-    // 1. ประกาศตัวแปร Global
-    let allProducts = [];
-    let currentSearchTerm = '';
-    let currentCategory = 'All';
-
-    // 2. ฟังก์ชันดึงข้อมูลจาก JSON
-    async function loadProducts() {
-        const container = document.getElementById('product-container');
-        try {
-            const response = await fetch('products.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            allProducts = await response.json();
-            renderProducts(allProducts); // ดึงเสร็จแล้วส่งไปวาด HTML
-        } catch (error) {
-            console.error("Could not load products:", error);
-            container.innerHTML = `
-                <div class="col-12 text-center">
-                    <p class="text-danger">ขออภัย! ไม่สามารถโหลดข้อมูลสินค้าได้ในขณะนี้</p>
-                </div>
-            `;
-        }
-    }
-
-    // 3. ฟังก์ชันวาด HTML สินค้า (แก้ให้แสดงชื่อและราคาจาก JSON แล้ว!)
-    function renderProducts(productsToRender) {
-        const container = document.getElementById('product-container');
-        container.innerHTML = ''; 
-
-        if (productsToRender.length === 0) {
-            container.innerHTML = '<div class="col-12 text-center"><p>ไม่พบสินค้าที่คุณค้นหา</p></div>';
-            return;
-        }
-
-        productsToRender.forEach(product => {
-            let starsHtml = '';
-            for (let i = 1; i <= 5; i++) {
-                starsHtml += i <= product.rating 
-                    ? '<i class="text-warning fa fa-star"></i>' 
-                    : '<i class="text-muted fa fa-star"></i>';
-            }
-
-            // ถ้าไม่มีสีใน JSON ให้ข้ามไปก่อน หรือถ้ามีก็ใช้ map ต่อ
-            let colorsHtml = '';
-            if(product.colors) {
-                colorsHtml = product.colors.map(color => 
-                    `<span class="product-color-dot color-dot-${color} float-left rounded-circle ml-1"></span>`
-                ).join('');
-            }
-
-            let sizesHtml = product.sizes ? product.sizes.join('/') : '';
-
-            // ใช้ตัวแปร ${product...} แทนที่ข้อความ Hardcode
-            const productHTML = `
-                <div class="col-md-4">
-                    <div class="card mb-4 product-wap rounded-0">
-                        <div class="card rounded-0">
-                            <img class="card-img rounded-0 img-fluid" src="${product.image}">
-                            <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
-                                <ul class="list-unstyled">
-                                    <li><a class="btn btn-success text-white" href="shop-single.html"><i class="far fa-heart"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="far fa-eye"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="fas fa-cart-plus"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <a href="shop-single.html" class="h3 text-decoration-none">${product.name}</a>
-                            <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
-                                <li>${sizesHtml}</li>
-                                <li class="pt-2">${colorsHtml}</li>
-                            </ul>
-                            <ul class="list-unstyled d-flex justify-content-center mb-1">
-                                <li>${starsHtml}</li>
-                            </ul>
-                            <p class="text-center mb-0">$${product.price.toFixed(2)}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            container.innerHTML += productHTML;
-        });
-    }
-
-    // 4. ฟังก์ชันกรองข้อมูล
-    function filterProducts(searchTerm, category) {
-        return allProducts.filter(product => {
-            const isCategoryMatch = category === 'All' || product.category === category;
-            const isSearchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-            return isCategoryMatch && isSearchMatch;
-        });
-    }
-
-    // 5. เมื่อโหลดหน้าเว็บเสร็จ ให้จัดการปุ่มต่างๆ
-    document.addEventListener('DOMContentLoaded', () => {
-        loadProducts(); // โหลดสินค้า
-
-        // ระบบค้นหา
-        const searchInput = document.getElementById('inlineSearchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        
-        const executeSearch = () => {
-            currentSearchTerm = searchInput.value; 
-            const filtered = filterProducts(currentSearchTerm, currentCategory);
-            renderProducts(filtered);
-        };
-
-        if (searchBtn && searchInput) {
-            searchBtn.addEventListener('click', executeSearch);
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    executeSearch();
-                }
-            });
-        }
-
-        // ระบบเลือกหมวดหมู่ Sidebar
-        const categoryLinks = document.querySelectorAll('.category-link');
-        categoryLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault(); 
-                currentCategory = e.target.getAttribute('data-category');
-                const filtered = filterProducts(currentSearchTerm, currentCategory);
-                renderProducts(filtered);
-            });
-        });
-    });
-</script>
+    <script src="assets/js/shop.js"></script>
+    <script src="assets/js/cart.js"></script>
+    
+<!-- Start Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i> เพิ่มสินค้าลงตะกร้าเรียบร้อยแล้ว!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<!-- End Toast Notification -->
 </body>
 
 </html>
