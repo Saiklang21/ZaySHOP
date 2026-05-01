@@ -9,21 +9,25 @@ let currentCategory = 'All';
 // Functions (ฟังก์ชันการทำงานหลักหน้าร้าน)
 // ==========================================
 
-// 1. ฟังก์ชันดึงข้อมูลจาก JSON
-// 1. ฟังก์ชันดึงข้อมูลจาก JSON
+// 1. ฟังก์ชันดึงข้อมูลจาก API หลังบ้าน
 async function loadProducts() {
     const container = document.getElementById('product-container');
     try {
-        const response = await fetch('products.json');
+        const response = await fetch('http://localhost:3000/api/products');
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        allProducts = await response.json();
         
-        // เมื่อโหลดเสร็จ ให้แสดงผลสินค้าทั้งหมด
+        // รับข้อมูลมาเก็บไว้ในตัวแปร result ก่อน (ตอนนี้ result เป็น Object)
+        const result = await response.json();
+        
+        // 🌟 จุดแก้บั๊ก: ต้องเจาะเข้าไปเอาเฉพาะ Array ที่อยู่ใน result.data
+        allProducts = result.data; 
+        
+        // คราวนี้ allProducts เป็น Array แล้ว ส่งไป forEach ได้สบายๆ!
         renderProducts(allProducts); 
         
-        // ให้ตะกร้าอัปเดตตัวเองหลังจากดึงสินค้าเสร็จแล้ว
         updateCartUI();
         
     } catch (error) {
@@ -31,7 +35,7 @@ async function loadProducts() {
         if (container) {
             container.innerHTML = `
                 <div class="col-12 text-center mt-5">
-                    <p class="text-danger h4"><i class="fas fa-exclamation-triangle"></i> ขออภัย! ไม่สามารถโหลดข้อมูลสินค้าได้ในขณะนี้</p>
+                    <p class="text-danger h4"><i class="fas fa-exclamation-triangle"></i> ขออภัย! ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ในขณะนี้</p>
                 </div>
             `;
         }
