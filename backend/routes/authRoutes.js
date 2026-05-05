@@ -42,4 +42,41 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.post('/register', async (req, res) => {
+  const { email, password, firstName } = req.body;
+
+  if (!email || !password || !firstName) {
+    return res.status(400).json({ message: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
+  }
+
+  try {
+    const fileData = await fs.readFile(usersFilePath, 'utf-8');
+    const users = JSON.parse(fileData);
+
+    const emailExists = users.some(u => u.username.toLowerCase() === email.toLowerCase());
+    if (emailExists) {
+      return res.status(409).json({ message: 'อีเมลนี้ถูกใช้งานแล้ว' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = {
+      username: email.toLowerCase(),
+      password: hashedPassword,
+      firstName,
+      registrationDate: new Date().toISOString()
+    };
+
+    users.push(newUser);
+    await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), 'utf-8');
+
+    return res.status(201).json({
+      status: 'success',
+      message: 'สมัครสมาชิกสำเร็จ'
+    });
+  } catch (error) {
+    console.error('Register Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;

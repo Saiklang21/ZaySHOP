@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const registerForm = document.getElementById('register-form');
+
     // กันเหนียว! เช็กก่อนว่าในหน้า HTML มี id="login-form" อยู่จริงๆ ใช่ไหม
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -56,8 +58,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 showAlert('❌ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์หลังบ้านได้ (ลืมรัน Backend เปล่า!?)', 'danger');
             }
         });
-    } else {
-        // ถ้าหาฟอร์มไม่เจอ ให้แจ้งเตือนใน Console สีแดงๆ
-        console.error("🚨 บั๊ก: ไม่พบ element ที่มี id='login-form' ในหน้าเว็บครับ ไปเช็กไฟล์ login.html ด่วน!");
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const firstName = document.getElementById('firstName').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showAlert('❌ รหัสผ่านไม่ตรงกัน', 'danger');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, firstName, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert(`❌ ${data.message}`, 'danger');
+                    return;
+                }
+
+                showAlert('✅ สมัครสมาชิกสำเร็จ! กำลังพาไปหน้าเข้าสู่ระบบ...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            } catch (error) {
+                console.error('Register Error:', error);
+                showAlert('❌ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์หลังบ้านได้', 'danger');
+            }
+        });
+    }
+
+    if (!loginForm && !registerForm) {
+        console.error("🚨 บั๊ก: ไม่พบ login หรือ register form ในหน้าเว็บ");
     }
 });
