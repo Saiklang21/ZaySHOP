@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zay Shop - Login</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .brand-logo {
+            color: #59ab6e; /* สีเขียวของธีม Zay Shop */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="login-container">
+            <div class="text-center mb-4">
+                <h2 class="brand-logo">Zay Shop</h2>
+                <p class="text-muted">เข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+            </div>
+
+            <!-- กล่องแจ้งเตือน (ซ่อนไว้ก่อน) -->
+            <div id="alert-box" class="alert d-none" role="alert"></div>
+
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="email" class="form-label">อีเมล (Username)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" placeholder="example@email.com" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="password" class="form-label">รหัสผ่าน</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-2">เข้าสู่ระบบ</button>
+            </form>
+            
+            <div class="text-center mt-3">
+                <a href="index.html" class="text-decoration-none text-muted"><i class="fas fa-arrow-left"></i> กลับหน้าหลัก</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>
