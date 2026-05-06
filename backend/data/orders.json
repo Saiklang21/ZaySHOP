@@ -1,0 +1,68 @@
+[
+  {
+    "orderId": "ORD-1778040267868",
+    "email": "bank@example.com",
+    "creditCardLast4": "5678",
+    "total": 120,
+    "items": [
+      {
+        "productId": 1,
+        "name": "Nike Shoes",
+        "price": 120,
+        "quantity": 1
+      }
+    ],
+    "orderDate": "2026-05-06T04:04:27.868Z"
+  },
+  {
+    "orderId": "ORD-1778040358644",
+    "email": "bank@example.com",
+    "creditCardLast4": "5678",
+    "total": 120,
+    "items": [
+      {
+        "productId": 1,
+        "name": "Nike Shoes",
+        "price": 120,
+        "quantity": 1
+      }
+    ],
+    "orderDate": "2026-05-06T04:05:58.644Z"
+  },
+  {
+    "orderId": "ORD-1778040699566",
+    "email": "bank@example.com",
+    "creditCardLast4": "5678",
+    "total": 120,
+    "items": [
+      {
+        "productId": 1,
+        "name": "Nike Shoes",
+        "price": 120,
+        "quantity": 1
+      }
+    ],
+    "orderDate": "2026-05-06T04:11:39.566Z"
+  },
+  {
+    "orderId": "ORD-1778042135739",
+    "email": "bank@example.com",
+    "creditCardLast4": "5678",
+    "total": 770,
+    "items": [
+      {
+        "productId": 2,
+        "name": "Summer Breeze Shirt",
+        "price": 320,
+        "quantity": 1
+      },
+      {
+        "productId": 3,
+        "name": "Urban Cargo Pants",
+        "price": 450,
+        "quantity": 1
+      }
+    ],
+    "orderDate": "2026-05-06T04:35:35.739Z"
+  }
+]

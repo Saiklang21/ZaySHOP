@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Zay Shop - Checkout</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/templatemo.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-light">
+
+    <!-- Header (ย่อแบบกระชับ) -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow bg-white">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">Zay</a>
+            <div>
+                <a href="index.html" class="btn btn-outline-success btn-sm"><i class="fas fa-arrow-left"></i> Back to Shop</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Checkout Section -->
+    <div class="container mt-5 mb-5">
+        <div class="py-3 text-center">
+            <h2>Checkout</h2>
+            <p class="lead">Complete your order by providing your payment details below.</p>
+        </div>
+
+        <div class="row">
+            <!-- 🛒 ฝั่งขวา: สรุปตะกร้าสินค้า -->
+            <div class="col-md-5 order-md-2 mb-4">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-success">Your cart</span>
+                    <span class="badge bg-success rounded-pill" id="cart-count">0</span>
+                </h4>
+                <ul class="list-group mb-3" id="cart-summary">
+                    <!-- รายการสินค้าจะถูก JavaScript แทรกตรงนี้ -->
+                </ul>
+                <div id="cart-error" class="text-danger fw-bold text-center mt-2"></div>
+            </div>
+
+            <!-- 💳 ฝั่งซ้าย: ฟอร์มชำระเงิน -->
+            <div class="col-md-7 order-md-1 bg-white p-4 rounded shadow-sm">
+                <h4 class="mb-3">Payment Details</h4>
+                <form id="checkout-form">
+                    
+                    <!-- ช่อง Email -->
+                    <div class="mb-3">
+                        <label for="checkout-email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="checkout-email" placeholder="you@example.com">
+                        <!-- 🔥 จุดโชว์ Error Email -->
+                        <span id="email-error" class="text-danger" style="font-size: 0.85em;"></span>
+                    </div>
+
+                    <!-- ช่อง Credit Card -->
+                    <div class="mb-4">
+                        <label for="checkout-cc" class="form-label">Credit Card Number <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="checkout-cc" placeholder="1234567812345678" maxlength="16">
+                        <small class="text-muted d-block">Must be exactly 16 digits</small>
+                        <!-- 🔥 จุดโชว์ Error Credit Card -->
+                        <span id="cc-error" class="text-danger" style="font-size: 0.85em;"></span>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- ปุ่ม Submit -->
+                    <button class="w-100 btn btn-success btn-lg" type="submit">
+                        <i class="fas fa-lock"></i> Save Order & Pay
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. ดึงของจาก LocalStorage มาแสดงตอนเปิดหน้า
+        // ==========================================
+        const cartSummary = document.getElementById('cart-summary');
+        const cartCount = document.getElementById('cart-count');
+        
+        // จำลองข้อมูลตะกร้า (ถ้าไม่มี ให้เป็น Array ว่าง)
+        // Note: ลูกพี่ต้องจัดการปุ่ม Add to cart ในหน้า shop ให้บันทึกลง localStorage('cart') ด้วยนะ
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || []; 
+
+        function renderCart() {
+            cartSummary.innerHTML = '';
+            let total = 0;
+
+            if(cartItems.length === 0) {
+                cartSummary.innerHTML = `<li class="list-group-item text-center text-muted">Your cart is empty</li>`;
+                cartCount.innerText = "0";
+                return;
+            }
+
+            cartItems.forEach(item => {
+                total += (item.price * item.quantity);
+                cartSummary.innerHTML += `
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">${item.name || 'Product'}</h6>
+                            <small class="text-muted">Qty: ${item.quantity}</small>
+                        </div>
+                        <span class="text-muted">$${(item.price * item.quantity).toFixed(2)}</span>
+                    </li>
+                `;
+            });
+
+            // แถวโชว์ราคารวม
+            cartSummary.innerHTML += `
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                    <span>Total (USD)</span>
+                    <strong>$${total.toFixed(2)}</strong>
+                </li>
+            `;
+            cartCount.innerText = cartItems.length;
+        }
+
+        renderCart(); // เรียกใช้งานเพื่อวาดตะกร้า
+
+        // ==========================================
+        // 2. จัดการตอนกดปุ่ม Submit (ตรงตามสไลด์อาจารย์)
+        // ==========================================
+        document.getElementById('checkout-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // เคลียร์ Error เก่าทิ้งก่อน
+            document.getElementById('email-error').innerText = '';
+            document.getElementById('cc-error').innerText = '';
+            document.getElementById('cart-error').innerText = '';
+
+            const emailValue = document.getElementById('checkout-email').value;
+            const ccValue = document.getElementById('checkout-cc').value;
+
+            try {
+                // ยิง POST ไปที่ API
+                const response = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: emailValue,
+                        creditCard: ccValue,
+                        cartItems: cartItems
+                    })
+                });
+
+                const result = await response.json();
+
+                // 🚨 ถ้าพัง (Status 400) จะเข้าบล็อกนี้
+                if (!response.ok) {
+                    console.error("Validation Failed:", result.errors);
+                    
+                    // แจกแจง Specific Error Message ไปยังแต่ละจุด
+                    if (result.errors.email) document.getElementById('email-error').innerText = result.errors.email;
+                    if (result.errors.creditCard) document.getElementById('cc-error').innerText = result.errors.creditCard;
+                    if (result.errors.cartItems) document.getElementById('cart-error').innerText = result.errors.cartItems;
+                    
+                    // ⚠️ อาจารย์สั่งว่า "does NOT clear the user's cart on the frontend"
+                    // ดังนั้นเราจะหยุดทำงานแค่นี้ ตะกร้ายังอยู่เหมือนเดิม
+                    return; 
+                }
+
+                // 🎉 ถ้าสำเร็จ (Status 200)
+                alert(`Order saved successfully!\nTotal amount: $${result.total}`);
+                
+                if (result.clearCart) {
+                    localStorage.removeItem('cart'); // ล้างตะกร้า
+                    window.location.href = 'index.html'; // เด้งกลับหน้าโฮม
+                }
+
+            } catch (error) {
+                console.error("Server connection error:", error);
+                alert("Cannot connect to the backend server!");
+            }
+        });
+    </script>
+</body>
+</html>

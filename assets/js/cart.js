@@ -56,7 +56,7 @@ function updateCartUI() {
     const cartTotalPrice = document.getElementById('cart-total-price');
 
     if (!cartContainer) return;
-    if (allProducts.length === 0) return; 
+    if (typeof allProducts === 'undefined' || allProducts.length === 0) return; 
 
     let totalItems = 0;
     let totalPrice = 0;
@@ -102,17 +102,20 @@ function updateCartUI() {
 }
 
 // ==========================================
-// Cart Event Listeners (ผูก Event ตะกร้า)
+// Cart Event Listeners (ผูก Event ตะกร้าทั้งหมดไว้ที่นี่)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     
+    // 1. โหลดข้อมูลตะกร้าเมื่อเปิดหน้าเว็บ
     loadCartFromLocalStorage();
 
+    // 2. ดักจับปุ่ม Add to Cart หน้าสินค้า
     const productContainer = document.getElementById('product-container');
     if (productContainer) {
         productContainer.addEventListener('click', handleAddToCart);
     }
 
+    // 3. ดักจับปุ่มเปิดตะกร้า (ไอคอนรถเข็น)
     const cartIconBtn = document.querySelector('[data-bs-target="#cartOffcanvas"]');
     if (cartIconBtn) {
         cartIconBtn.addEventListener('click', (e) => {
@@ -125,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 4. ดักจับปุ่มบวก/ลบสินค้าในตะกร้า
     const cartItemsContainer = document.getElementById('cart-items-container');
     if (cartItemsContainer) {
         cartItemsContainer.addEventListener('click', (e) => {
@@ -155,4 +159,44 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+
+    // ==========================================
+    // 5. ดักจับปุ่ม "ดำเนินการชำระเงิน" (Go to Checkout)
+    // ==========================================
+    const btnGoCheckout = document.getElementById('btn-go-checkout');
+    
+    if (btnGoCheckout) { // เช็กว่าหน้านี้มีปุ่มนี้ไหม
+        btnGoCheckout.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // 5.1 ตรวจสอบว่าตะกร้าว่างไหม
+            if (Object.keys(cart).length === 0) {
+                alert('ตะกร้าสินค้าว่างเปล่า กรุณาเลือกสินค้าก่อนครับ!');
+                return;
+            }
+
+            // 5.2 แปลง Object `cart` ให้กลายเป็น Array ตามที่หน้า checkout.html รอรับอยู่
+            const cartArrayForCheckout = [];
+            
+            for (const productId in cart) {
+                const item = cart[productId];
+                // ดึงชื่อสินค้าจาก allProducts มาแนบให้ด้วย
+                const product = typeof allProducts !== 'undefined' ? allProducts.find(p => p.id === parseInt(productId)) : null;
+                
+                cartArrayForCheckout.push({
+                    productId: parseInt(productId),
+                    name: product ? product.name : 'Product', // เผื่อหาชื่อไม่เจอ
+                    price: item.price,
+                    quantity: item.quantity
+                });
+            }
+
+            // 5.3 แพ็ค Array ยัดลง localStorage ในชื่อ 'cart' (เพื่อให้หน้า Checkout ดึงไปใช้)
+            localStorage.setItem('cart', JSON.stringify(cartArrayForCheckout));
+
+            // 5.4 เตะเปลี่ยนหน้าไปที่ checkout.html
+            window.location.href = 'checkout.html';
+        });
+    }
+
+}); // <--- ปิด DOMContentLoaded ตรงนี้จุดเดียวจบครับ!

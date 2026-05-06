@@ -12,7 +12,7 @@ app.use(express.static(frontendPath));
 // Import Routes
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
-
+const checkoutRoutes = require('./routes/checkoutRoutes');
 app.use(express.json());
 
 // ==========================================
@@ -21,6 +21,7 @@ app.use(express.json());
 // 🌟 สั่งให้ Express ใช้งาน productRoutes เมื่อมีการเรียก URL ที่ขึ้นต้นด้วย /api/products
 app.use('/api/products', productRoutes);
 app.use('/api', authRoutes);
+app.use('/api/checkout', checkoutRoutes);
 
 // API เช็กสถานะ
 app.get('/api/status', (req, res) => {
