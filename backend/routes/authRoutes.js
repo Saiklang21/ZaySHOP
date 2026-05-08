@@ -34,7 +34,13 @@ router.post('/login', async (req, res) => {
     return res.status(200).json({
       status: 'success',
       message: 'เข้าสู่ระบบสำเร็จ',
-      token
+      token,
+      // ✨ จุดที่ 1: ส่งข้อมูล user และ id กลับไปให้หน้าบ้าน (auth.js)
+      user: {
+          id: user.id, 
+          email: user.username,
+          firstName: user.firstName
+      }
     });
   } catch (error) {
     console.error('Login Error:', error);
@@ -51,7 +57,10 @@ router.post('/register', async (req, res) => {
 
   try {
     const fileData = await fs.readFile(usersFilePath, 'utf-8');
-    const users = JSON.parse(fileData);
+    let users = [];
+    if (fileData) {
+        users = JSON.parse(fileData);
+    }
 
     const emailExists = users.some(u => u.username.toLowerCase() === email.toLowerCase());
     if (emailExists) {
@@ -60,6 +69,8 @@ router.post('/register', async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = {
+      // ✨ จุดที่ 2: สร้าง ID ให้สมาชิกใหม่ (ใช้ Date.now() สร้างตัวเลข Primary Key จำลองแบบง่ายๆ)
+      id: Date.now(), 
       username: email.toLowerCase(),
       password: hashedPassword,
       firstName,

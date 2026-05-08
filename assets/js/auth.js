@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const alertBox = document.getElementById('alert-box');
 
+    
+
     // ฟังก์ชันสำหรับแสดงข้อความแจ้งเตือน
     const showAlert = (message, type) => {
         if (alertBox) {
@@ -47,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Save Token ลง LocalStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userEmail', email);
+
+                // ✨ [เพิ่มใหม่] เซฟ user_id ลงเครื่อง เพื่อเอาไปใช้หน้า Checkout!
+                localStorage.setItem('current_userId', data.user.id); // หรือ data.userId (ขึ้นอยู่กับว่าหลังบ้านส่งมาชื่ออะไร)
 
                 // รอ 1.5 วินาทีแล้วเด้งกลับไปหน้า shop
                 setTimeout(() => {

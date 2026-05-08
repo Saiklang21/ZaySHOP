@@ -1,7 +1,7 @@
 // ==========================================
 // Cart State (ตัวแปรเก็บสถานะตะกร้า)
 // ==========================================
-let cart = {}; 
+let cart = {};
 
 // ==========================================
 // Cart LocalStorage Functions (ระบบเซฟ/โหลด)
@@ -11,13 +11,13 @@ let cart = {};
 function loadCartFromLocalStorage() {
     const savedCart = localStorage.getItem('zayShopCart');
     if (savedCart) {
-        cart = JSON.parse(savedCart); 
+        cart = JSON.parse(savedCart);
     }
 }
 
 // 2. ฟังก์ชันเซฟตะกร้าลง LocalStorage
 function saveCartToLocalStorage() {
-    localStorage.setItem('zayShopCart', JSON.stringify(cart)); 
+    localStorage.setItem('zayShopCart', JSON.stringify(cart));
 }
 
 // ==========================================
@@ -40,7 +40,7 @@ function handleAddToCart(event) {
         };
     }
 
-    saveCartToLocalStorage(); 
+    saveCartToLocalStorage();
     updateCartUI();
 
     const toastElement = document.getElementById('cartToast');
@@ -56,7 +56,7 @@ function updateCartUI() {
     const cartTotalPrice = document.getElementById('cart-total-price');
 
     if (!cartContainer) return;
-    if (typeof allProducts === 'undefined' || allProducts.length === 0) return; 
+    if (typeof allProducts === 'undefined' || allProducts.length === 0) return;
 
     let totalItems = 0;
     let totalPrice = 0;
@@ -94,10 +94,10 @@ function updateCartUI() {
 
     if (totalItems === 0) {
         cartContainer.innerHTML = '<p class="text-center text-muted mt-5">ตะกร้าของคุณว่างเปล่า</p>';
-        if(cartTotalPrice) cartTotalPrice.innerText = '$0.00';
+        if (cartTotalPrice) cartTotalPrice.innerText = '$0.00';
     } else {
         cartContainer.innerHTML = cartHTML;
-        if(cartTotalPrice) cartTotalPrice.innerText = `$${totalPrice.toFixed(2)}`;
+        if (cartTotalPrice) cartTotalPrice.innerText = `$${totalPrice.toFixed(2)}`;
     }
 }
 
@@ -105,7 +105,7 @@ function updateCartUI() {
 // Cart Event Listeners (ผูก Event ตะกร้าทั้งหมดไว้ที่นี่)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // 1. โหลดข้อมูลตะกร้าเมื่อเปิดหน้าเว็บ
     loadCartFromLocalStorage();
 
@@ -137,8 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const productId = btnPlus.dataset.productId;
                 if (cart[productId]) {
                     cart[productId].quantity += 1;
-                    saveCartToLocalStorage(); 
-                    updateCartUI(); 
+                    saveCartToLocalStorage();
+                    updateCartUI();
                 }
                 return;
             }
@@ -152,8 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         delete cart[productId];
                     }
-                    saveCartToLocalStorage(); 
-                    updateCartUI(); 
+                    saveCartToLocalStorage();
+                    updateCartUI();
                 }
                 return;
             }
@@ -164,9 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. ดักจับปุ่ม "ดำเนินการชำระเงิน" (Go to Checkout)
     // ==========================================
     const btnGoCheckout = document.getElementById('btn-go-checkout');
-    
-    if (btnGoCheckout) { // เช็กว่าหน้านี้มีปุ่มนี้ไหม
-        btnGoCheckout.addEventListener('click', function(e) {
+
+    if (btnGoCheckout) { 
+        // สังเกตว่าเราใส่ async ไว้ตรงนี้แล้ว!
+        btnGoCheckout.addEventListener('click', async function (e) {
             e.preventDefault();
 
             // 5.1 ตรวจสอบว่าตะกร้าว่างไหม
@@ -175,28 +176,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 5.2 แปลง Object `cart` ให้กลายเป็น Array ตามที่หน้า checkout.html รอรับอยู่
+            // 5.2 ✨ พระเอกของเรา! เช็กก่อนเลยว่าล็อกอินหรือยัง (ถ้ายัง เตะไปหน้า Login)
+            const userId = localStorage.getItem('current_userId');
+            if (!userId || userId === 'undefined') {
+                alert('กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อครับ!');
+                window.location.href = 'login.html';
+                return; // เบรกการทำงานทันที ไม่ให้ไปต่อ
+            }
+
+            // 5.3 แปลง Object `cart` ให้กลายเป็น Array
             const cartArrayForCheckout = [];
-            
             for (const productId in cart) {
                 const item = cart[productId];
-                // ดึงชื่อสินค้าจาก allProducts มาแนบให้ด้วย
                 const product = typeof allProducts !== 'undefined' ? allProducts.find(p => p.id === parseInt(productId)) : null;
-                
+
                 cartArrayForCheckout.push({
                     productId: parseInt(productId),
-                    name: product ? product.name : 'Product', // เผื่อหาชื่อไม่เจอ
+                    name: product ? product.name : 'Product', 
                     price: item.price,
                     quantity: item.quantity
                 });
             }
 
-            // 5.3 แพ็ค Array ยัดลง localStorage ในชื่อ 'cart' (เพื่อให้หน้า Checkout ดึงไปใช้)
+            // 5.4 แพ็ค Array ยัดลง localStorage (เพื่อให้หน้า Checkout ดึงไปใช้แสดงผล)
             localStorage.setItem('cart', JSON.stringify(cartArrayForCheckout));
+            
+            // 💡 ทริคแถม: แพ็ค userId ใส่ localStorage ไว้ให้หน้า checkout.html ดึงไปใช้ยิง API ด้วย!
+            localStorage.setItem('checkout_userId', userId);
 
-            // 5.4 เตะเปลี่ยนหน้าไปที่ checkout.html
+            // 5.5 เตะเปลี่ยนหน้าไปที่ checkout.html
+            // (เราจะไม่ยิง API ตรงนี้ เพราะลูกพี่มีหน้า checkout.html รอรับอยู่แล้ว ให้ไปยิง API ที่หน้านั้นครับ!)
             window.location.href = 'checkout.html';
         });
     }
 
-}); // <--- ปิด DOMContentLoaded ตรงนี้จุดเดียวจบครับ!
+}); // <--- ปิด DOMContentLoaded ตรงนี้จุดเดียวจบ ถูกต้องแล้วครับ!

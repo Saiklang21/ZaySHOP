@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Zay Shop - Checkout</title>
     <meta charset="utf-8">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="assets/css/custom.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body class="bg-light">
 
     <!-- Header (ย่อแบบกระชับ) -->
@@ -16,7 +18,8 @@
         <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">Zay</a>
             <div>
-                <a href="index.html" class="btn btn-outline-success btn-sm"><i class="fas fa-arrow-left"></i> Back to Shop</a>
+                <a href="index.html" class="btn btn-outline-success btn-sm"><i class="fas fa-arrow-left"></i> Back to
+                    Shop</a>
             </div>
         </div>
     </nav>
@@ -45,10 +48,11 @@
             <div class="col-md-7 order-md-1 bg-white p-4 rounded shadow-sm">
                 <h4 class="mb-3">Payment Details</h4>
                 <form id="checkout-form">
-                    
+
                     <!-- ช่อง Email -->
                     <div class="mb-3">
-                        <label for="checkout-email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <label for="checkout-email" class="form-label">Email Address <span
+                                class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="checkout-email" placeholder="you@example.com">
                         <!-- 🔥 จุดโชว์ Error Email -->
                         <span id="email-error" class="text-danger" style="font-size: 0.85em;"></span>
@@ -56,8 +60,10 @@
 
                     <!-- ช่อง Credit Card -->
                     <div class="mb-4">
-                        <label for="checkout-cc" class="form-label">Credit Card Number <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="checkout-cc" placeholder="1234567812345678" maxlength="16">
+                        <label for="checkout-cc" class="form-label">Credit Card Number <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="checkout-cc" placeholder="1234567812345678"
+                            maxlength="16">
                         <small class="text-muted d-block">Must be exactly 16 digits</small>
                         <!-- 🔥 จุดโชว์ Error Credit Card -->
                         <span id="cc-error" class="text-danger" style="font-size: 0.85em;"></span>
@@ -80,16 +86,16 @@
         // ==========================================
         const cartSummary = document.getElementById('cart-summary');
         const cartCount = document.getElementById('cart-count');
-        
+
         // จำลองข้อมูลตะกร้า (ถ้าไม่มี ให้เป็น Array ว่าง)
         // Note: ลูกพี่ต้องจัดการปุ่ม Add to cart ในหน้า shop ให้บันทึกลง localStorage('cart') ด้วยนะ
-        let cartItems = JSON.parse(localStorage.getItem('cart')) || []; 
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
 
         function renderCart() {
             cartSummary.innerHTML = '';
             let total = 0;
 
-            if(cartItems.length === 0) {
+            if (cartItems.length === 0) {
                 cartSummary.innerHTML = `<li class="list-group-item text-center text-muted">Your cart is empty</li>`;
                 cartCount.innerText = "0";
                 return;
@@ -123,7 +129,7 @@
         // ==========================================
         // 2. จัดการตอนกดปุ่ม Submit (ตรงตามสไลด์อาจารย์)
         // ==========================================
-        document.getElementById('checkout-form').addEventListener('submit', async function(e) {
+        document.getElementById('checkout-form').addEventListener('submit', async function (e) {
             e.preventDefault();
 
             // เคลียร์ Error เก่าทิ้งก่อน
@@ -134,47 +140,64 @@
             const emailValue = document.getElementById('checkout-email').value;
             const ccValue = document.getElementById('checkout-cc').value;
 
+            // ภายในฟังก์ชัน checkoutForm.addEventListener('submit', async (e) => { ...
+            e.preventDefault();
+
+            // 1. ดึงของวิเศษจากกระเป๋า (Token & User ID & ตะกร้า)
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('current_userId');
+            const cartData = localStorage.getItem('cart');
+
+            // ดักจับกันเหนียว (เผื่อมีคนแอบพิมพ์ URL เข้ามาโดยไม่ล็อกอิน)
+            if (!userId || !cartData) {
+                alert('กรุณาเข้าสู่ระบบและเลือกสินค้าก่อนครับ');
+                window.location.href = 'shop.html';
+                return;
+            }
+
+            // 2. แพ็คของเตรียมส่งไปหลังบ้าน
+            const payload = {
+                userId: userId,
+                cartItems: JSON.parse(cartData)
+            };
+
             try {
-                // ยิง POST ไปที่ API
-                const response = await fetch('/api/checkout', {
+                // 3. ยิง API พร้อมโชว์บัตรประจำตัว (Bearer Token)
+                const response = await fetch('http://localhost:3000/api/checkout', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: emailValue,
-                        creditCard: ccValue,
-                        cartItems: cartItems
-                    })
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` // ✨ จุดแก้บั๊ก 401 คือการแนบพาสปอร์ตตรงนี้!
+                    },
+                    body: JSON.stringify(payload)
                 });
 
-                const result = await response.json();
+                const data = await response.json();
 
-                // 🚨 ถ้าพัง (Status 400) จะเข้าบล็อกนี้
+                // 4. เช็กสถานะการตอบกลับ
                 if (!response.ok) {
-                    console.error("Validation Failed:", result.errors);
-                    
-                    // แจกแจง Specific Error Message ไปยังแต่ละจุด
-                    if (result.errors.email) document.getElementById('email-error').innerText = result.errors.email;
-                    if (result.errors.creditCard) document.getElementById('cc-error').innerText = result.errors.creditCard;
-                    if (result.errors.cartItems) document.getElementById('cart-error').innerText = result.errors.cartItems;
-                    
-                    // ⚠️ อาจารย์สั่งว่า "does NOT clear the user's cart on the frontend"
-                    // ดังนั้นเราจะหยุดทำงานแค่นี้ ตะกร้ายังอยู่เหมือนเดิม
-                    return; 
+                    console.error("Validation Failed:", data);
+                    alert(`❌ ไม่สามารถชำระเงินได้: ${data.message || 'ข้อมูลไม่ถูกต้อง'}`);
+                    return; // 🛑 พระเอกขี่ม้าขาว! สั่งหยุดการทำงานตรงนี้ ห้ามรันลงไปพังข้างล่างเด็ดขาด
                 }
 
-                // 🎉 ถ้าสำเร็จ (Status 200)
-                alert(`Order saved successfully!\nTotal amount: $${result.total}`);
-                
-                if (result.clearCart) {
-                    localStorage.removeItem('cart'); // ล้างตะกร้า
-                    window.location.href = 'index.html'; // เด้งกลับหน้าโฮม
-                }
+                // 5. ถ้าผ่านฉลุย (สถานะ 200)
+                alert('🎉 ชำระเงินและบันทึกออเดอร์ลง Database สำเร็จ!');
+
+                // ล้างตะกร้าให้เกลี้ยงหลังจ่ายเงินเสร็จ
+                localStorage.removeItem('cart');
+                localStorage.removeItem('zayShopCart');
+
+                // เด้งกลับหน้าแรกแบบหล่อๆ
+                window.location.href = 'index.html';
 
             } catch (error) {
-                console.error("Server connection error:", error);
-                alert("Cannot connect to the backend server!");
+                // บล็อกนี้จะทำงานก็ต่อเมื่อเซิร์ฟเวอร์ตายจริงๆ ไม่ใช่ตายเพราะเขียนโค้ดทะลุเหมือนก่อนหน้า
+                console.error('Server connection error:', error);
+                alert('❌ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาลองใหม่');
             }
         });
     </script>
 </body>
+
 </html>
