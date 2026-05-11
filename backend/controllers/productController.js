@@ -1,27 +1,14 @@
 const productService = require('../services/productService');
 
-// Handler สำหรับ GET /api/products
-async function getProducts(req, res) {
+exports.getAllProducts = async (req, res) => {
     try {
-        // เรียกใช้ Service เพื่อดึงข้อมูล
-        const products = await productService.getAllProducts();
-        
-        // ส่งผลลัพธ์กลับไปให้ Frontend
-        res.status(200).json({
-            status: 'success',
-            results: products.length,
+        const products = await productService.getProducts();
+        return res.status(200).json({
+            success: true,
             data: products
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            status: 'error',
-            message: 'เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์',
-            error: error.message
-        });
+        console.error('Product Controller Error:', error);
+        return res.status(500).json({ success: false, message: 'Server Error: ไม่สามารถดึงข้อมูลสินค้าได้' });
     }
-}
-
-module.exports = {
-    getProducts
 };
